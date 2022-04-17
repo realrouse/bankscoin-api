@@ -71,7 +71,7 @@ router.get('/api', (__, res) => {
                                                                                         currentMiningReward: parse(currentMiningReward),
                                                                                         currentMiningRewardFormatted: formatted(currentMiningReward),
                                                                                         currentEthBlockNumber: block,
-                                                                                        apiMainPage: "https://bsov-api.herokuapp.com/"
+                                                                                        apiMainPage: "https://bankscoin-api.herokuapp.com/"
                                                                                     }) 
                                                                                 })
                                                                             })
@@ -95,6 +95,21 @@ router.get('/api', (__, res) => {
     })
 });
 
+
+
+
+router.get('/circulating-text', (__, res) => {
+    _.totalSupply().call((__, totalSupply) => { 
+        _.tokensMinted().call((__, tokensMinted) => {
+            const burn = supply - formatted(totalSupply)
+            res.set('text/html').send(
+                (formatted(tokensMinted) - burn).toString()
+            )
+        })
+    })
+});
+
+
 router.get('/circulating', (__, res) => {
     _.totalSupply().call((__, totalSupply) => { 
         _.tokensMinted().call((__, tokensMinted) => {
@@ -117,6 +132,29 @@ router.get('/frozen', (__, res) => {
         })
     })
 });
+
+ router.get('/liquidity-eth', (__, res) => {
+    const UniswapWhackdEthAmountOfEth = 'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2&address=0xc491405d542a393d8d202a72f0fb076447e61891&tag=latest&apikey=VFXCIKBK33QVIW42AM7153EANCA3YT7Q7V';
+    axios.get(UniswapWhackdEthAmountOfEth).then(function (response) {
+        console.log(response.data.result)
+       const {result} = response.data
+        res.send({
+            UniswapWhackdEthAmountOfEth: formatted(result)
+        })
+    })
+ });
+
+ router.get('/liquidity-bkc', (__, res) => {
+    const UniswapWhackdEthAmountOfWhackd = 'https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress=0xCF8335727B776d190f9D15a54E6B9B9348439eEE&address=0xc491405d542a393d8d202a72f0fb076447e61891&tag=latest&apikey=VFXCIKBK33QVIW42AM7153EANCA3YT7Q7V';
+    axios.get(UniswapWhackdEthAmountOfWhackd).then(function (response) {
+        console.log(response.data.result)
+       const {result} = response.data
+        res.send({
+            UniswapWhackdEthAmountOfWhackd: formatted(result)
+        })
+    })
+ });
+
 
 router.get('/price', (__, res) => {
     const priceURL = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoinsov&vs_currencies=usd';
