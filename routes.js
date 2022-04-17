@@ -10,11 +10,13 @@ const URL = 'https://etherscan.io/address/0xbC9d0F9969b4ba0bC7E4F6459b7393FE0e66
 const address = "0xbC9d0F9969b4ba0bC7E4F6459b7393FE0e661620" //BKC contract address
 const contract = new web3.eth.Contract(abi, address)
 const decimalPlaces = 100000000
+const ETHdecimalPlaces = 1000000000000000
 const supply = 1000000
 const bigSupply = 100000000000000
 const _ = contract.methods
 const parse = input => { return JSON.parse(input) }
 const formatted = input => { return parse(input) / decimalPlaces }
+const formattedETH = input => { return parse(input) / ETHdecimalPlaces }
 module.exports = router;
 
 router.get('/api', (__, res) => {
@@ -139,7 +141,7 @@ router.get('/frozen', (__, res) => {
         console.log(response.data.result)
        const {result} = response.data
         res.send({
-            UniswapBkcEthAmountOfEth: formatted(result)
+            UniswapBkcEthAmountOfEth: formattedETH(result)
         })
     })
  });
